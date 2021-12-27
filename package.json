@@ -1,0 +1,26 @@
+{
+  "name": "topology",
+  "version": "0.0.1",
+  "description": "Topology API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmedibrahim404/TopologyAPISW.git"
+  },
+  "keywords": [
+    "API"
+  ],
+  "author": "Ahmed Ibrahim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmedibrahim404/TopologyAPISW/issues"
+  },
+  "homepage": "https://github.com/ahmedibrahim404/TopologyAPISW#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2"
+  }
+}
