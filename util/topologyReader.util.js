@@ -42,12 +42,33 @@ module.exports = class TopologyReader {
         fs.unlinkSync('./' + this.file);
     }
 
-    getDevicesInTopology(topology){
-
+    getDevicesInTopology(){
+        if(this.file === null) {
+            return;
+        }
+        return this.readTopology().compontents;
     }
 
-    getDevicesInNodeTopology(node, topology){
+    getDevicesInNetlist(netlist){
+        if(this.file === null){
+            return;
+        }
 
+        let data = this.readTopology()['components'];
+        let componentsWithNetlist = [];
+
+        for(let row of data){
+        
+            for(let key in row.netlist){
+                if(row.netlist[key] == netlist){
+                    componentsWithNetlist.push(row);
+                    break;
+                }
+            }
+        
+        }
+
+        return componentsWithNetlist;
     }
 
 }

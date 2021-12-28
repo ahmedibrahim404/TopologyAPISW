@@ -27,7 +27,7 @@ router.post('/writetopology', (req, res) => {
         let topology = new TopologyReader(file);
         let currentTopology = topology.readTopology();
         
-        if(Object.keys(newTopology).length != 0) currentTopology.push(newTopology);
+        currentTopology = newTopology;
         topology.writeTopology(currentTopology);
 
         return res.status(200).json(topology.readTopology());
@@ -60,12 +60,30 @@ router.delete('/deletetopology', (req, res) => {
 
 router.get('/getdevicesintopology', (req, res) => {
 
+    let file = req.query.fileName;
+
+    try {
+        let topology = new TopologyReader(file);
+        return res.status(200).json(topology.getDevicesInTopology());
+    } catch(error){
+        return res.status(404).send(error);
+    }
     
 
 });
 
 router.get('/getdevicesinnode', (req, res) => {
+    let file = req.query.fileName;
+    let netlist = req.query.netList;
+    
+    if(!netlist) return res.status(404).send('Error 404: Netlist not found');
 
+    try {
+        let topology = new TopologyReader(file);
+        return res.status(200).json({"devices": topology.getDevicesInNetlist(netlist)});
+    } catch(error){
+        return res.status(404).send(error);
+    }
 });
 
 module.exports = router;
