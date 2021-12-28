@@ -1,9 +1,19 @@
 const router = require('express').Router();
 const TopologyReader = require('../util/topologyReader.util');
 
+router.get('/', (req, res) => {
+    return res.status(200).send('Welcome to Topology API');
+});
+
+
 router.get('/readtopology', (req, res) => {
+
     let file = req.query.fileName;
-    console.log(file);
+
+    if(!file) {
+        return res.status(404).send('Error 404: Not found file');
+    }
+
     try {
         let topology = new TopologyReader(file);
         res.status(200).json(topology.readTopology());
@@ -17,16 +27,16 @@ router.post('/writetopology', (req, res) => {
     let newTopology;
 
     try {
-        newTopology = JSON.parse(req.body.newTopology);
+        newTopology = req.body.newTopology;
     } catch(err){
         newTopology = {};
     }
 
-    try {
 
-        let topology = new TopologyReader(file);
-        let currentTopology = topology.readTopology();
+    try {
+        let topology = new TopologyReader(file, true);
         
+        let currentTopology;
         currentTopology = newTopology;
         topology.writeTopology(currentTopology);
 
@@ -44,23 +54,13 @@ router.get('/querytopology', (req, res) => {
 
 });
 
-router.delete('/deletetopology', (req, res) => {
-
-    let file = req.body.fileName;
-
-    try {
-        let topology = new TopologyReader(file);
-        topology.deleteTopology();
-        return res.sendStatus(200);
-    } catch(error){
-        return res.status(404).send(error);
-    }
-
-});
-
 router.get('/getdevicesintopology', (req, res) => {
 
     let file = req.query.fileName;
+
+    if(!file) {
+        return res.status(404).send('Error 404: Not found file');
+    }
 
     try {
         let topology = new TopologyReader(file);
@@ -75,16 +75,36 @@ router.get('/getdevicesintopology', (req, res) => {
 router.get('/getdevicesinnode', (req, res) => {
     let file = req.query.fileName;
     let netlist = req.query.netList;
-    
-    if(!netlist) return res.status(404).send('Error 404: Netlist not found');
 
+    if(!netlist) return res.status(404).send('Error 404: Netlist not found');
+    if(!file) return res.status(404).send('Error 404: Not found file');
+    
     try {
         let topology = new TopologyReader(file);
-        return res.status(200).json({"devices": topology.getDevicesInNetlist(netlist)});
+        return res.status(200).json(topology.getDevicesInNetlist(netlist));
     } catch(error){
         return res.status(404).send(error);
     }
 });
+
+
+router.delete('/deletetopology', (req, res) => {
+
+    let file = req.body.fileName;
+
+    if(!file) return res.status(404).send('Error 404: Not found file');
+
+
+    try {
+        let topology = new TopologyReader(file);
+        topology.deleteTopology();
+        return res.sendStatus(200);
+    } catch(error){
+        return res.status(404).send(error);
+    }
+
+});
+
 
 module.exports = router;
 

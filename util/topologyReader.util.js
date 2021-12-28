@@ -4,21 +4,22 @@ module.exports = class TopologyReader {
 
     file = null;
 
-    constructor(srcDest=''){
+    constructor(srcDest='', creatingNewFile=false){
         this.file = srcDest;
         return fs.readFile('./'+this.file, (err, data) => {
             
             if (err){
-                return fs.writeFileSync('./'+this.file, 
-                JSON.stringify(
-                    {
-                        id:"top" + Math.randon(),
-                        compontents: [],
-                    }
-                ));
+                if(creatingNewFile === true) return fs.writeFileSync('./'+this.file, JSON.stringify({}));
+                return {};
+            }
+            
+            try {
+                data = JSON.parse(data);
+            } catch(err){
+                data = {};
             }
 
-            return JSON.parse(data);
+            return data;
         });
     }
 
@@ -46,7 +47,7 @@ module.exports = class TopologyReader {
         if(this.file === null) {
             return;
         }
-        return this.readTopology().compontents;
+        return this.readTopology()['components'];
     }
 
     getDevicesInNetlist(netlist){
