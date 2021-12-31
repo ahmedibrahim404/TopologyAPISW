@@ -48,12 +48,6 @@ router.post('/writetopology', (req, res) => {
 
 });
 
-router.get('/querytopology', (req, res) => {
-
-
-
-});
-
 router.get('/getdevicesintopology', (req, res) => {
 
     let file = req.query.fileName;
